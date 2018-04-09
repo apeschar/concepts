@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+<title>Cache API</title>
+</head>
+<body>
+<script>
+
+(function () {
+    var cache;
+    caches.open('test')
+        .then(function (c) {
+            cache = c;
+            var responseBlob = new Blob(['42']);
+            var response = new Response(responseBlob);
+            var request = new Request('the-answer');
+            return cache.put(request, response);
+        })
+        .then(function () {
+            return cache.match(new Request('the-answer'));
+        })
+        .then(function (result) {
+            return result.text();
+        })
+        .then(function (result) {
+            console.log("Value from cache:", result);
+        })
+        .catch(function (error) {
+            console.warn(error);
+        });
+})();
+
+</script>
+</body>
+</html>
